@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>老吕之家</title>
+	<link rel="icon" type="png" href="img/favicon.png">
+    <style>
+        body {
+			cursor: url("img/favicon.png") 16 16, auto;
+
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            /* RGB背景效果 */
+            background: linear-gradient(45deg, #ff0000, #ff9900, #33cc33, #3399ff, #cc33ff, #ff0066);
+            background-size: 400% 400%;
+            animation: rgb-background 10s ease infinite;
+            min-height: 100vh;
+        }
+        
+        /* RGB背景动画 */
+        @keyframes rgb-background {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        /* RGB文字效果 */
+        .rgb-text {
+            background: linear-gradient(90deg, #ff0000, #ff9900, #33cc33, #3399ff, #cc33ff, #ff0066);
+            background-size: 400% 100%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: rgb-flow 4s linear infinite;
+        }
+        
+        @keyframes rgb-flow {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 400% 50%; }
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin: 10px 0;
+        }
+        
+        h2 {
+            font-size: 2rem;
+            margin: 10px 0;
+        }
+        
+        h3 {
+            font-size: 1.5rem;
+            margin: 10px 0;
+        }
+        
+        p {
+            font-size: 1.2rem;
+            margin: 15px 0;
+        }
+        
+        .content {
+            background-color: rgba(255, 255, 255, 0.8);
+            display: inline-block;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="content">
+        <h1 class="rgb-text">老吕之家！！！</h1>
+        <h2 class="rgb-test">503A！！！</h2>
+        <h3 class="rgb-text">老吕！！！</h3>
+        <p style="color: red;">这是老吕</p>
+        
+        <img src="img/DSC_2798.JPG" width="100" height="100">
+        
+        <h1 style="background-color:red;">另一个老吕，忘了结束</h1>
+        
+        <div>
+            <img src="img/fcxz.gif" width="500" height="500">
+            <img src="img/xiazhi.gif" width="500" height="500">
+            <img src="img/fcxz.gif" width="500" height="500">
+            <img src="img/siu.gif" width="500" height="500">
+            <img src="img/DSC_2798.JPG" width="500" height="500">
+            <img src="img/siu.gif" width="500" height="500">
+            <img src="img/wuxianlian.gif" width="500" height="500">
+            <img src="img/wuxianlian.gif" width="500" height="500">
+            <img src="img/wuxianlian.gif" width="500" height="500">
+        </div>
+    </div>
+	<script>
+	document.addEventListener("mousemove", function(e) {
+	    // 创建拖尾图片
+	    const img = document.createElement("img");
+	    img.src = "img/DSC_2798.JPG"; // ← 改成你自己的图片路径，例如 "images/star.png"
+	    img.style.position = "fixed";
+	    img.style.left = e.clientX + "px";
+	    img.style.top = e.clientY + "px";
+	    img.style.width = " 15px"; // 拖尾图片大小
+	    img.style.height = "15px";
+	    img.style.pointerEvents = "none";
+	    img.style.zIndex = "9999";
+	    img.style.opacity = "1";
+	    img.style.transform = "translate(-50%, -50%) scale(1)";
+	    img.style.transition = "opacity 1s ease, transform 1s ease";
+	    document.body.appendChild(img);
+	
+	    // 动画：放大并消失
+	    requestAnimationFrame(() => {
+	        img.style.opacity = "0";
+	        img.style.transform = "translate(-50%, -50%) scale(2)";
+	    });
+	
+	    // 删除元素
+	    setTimeout(() => img.remove(), 500);
+	});
+	</script>
+<script>
+document.addEventListener("click", function(e) {
+    const text = document.createElement("span");
+    text.textContent = "desuwa~~~"; // 点击出现的文字
+    text.style.position = "fixed";
+    text.style.left = e.clientX + "px";
+    text.style.top = e.clientY + "px";
+    text.style.fontSize = "40px";
+    text.style.fontWeight = "bold";
+    text.style.color = `hsl(${Math.random() * 360}, 80%, 60%)`; // 随机颜色
+    text.style.pointerEvents = "none";
+    text.style.zIndex = "9999";
+    text.style.userSelect = "none";
+    text.style.transform = "translate(-50%, -50%)";
+    text.style.transition = "transform 1s ease-out, opacity 1s ease-out";
+    document.body.appendChild(text);
+
+    // 启动动画
+    requestAnimationFrame(() => {
+        text.style.transform = "translate(-50%, -150%)";
+        text.style.opacity = "0";
+    });
+
+    // 清理元素
+text.style.transition = "transform 5s ease-out, opacity 5s ease-out";
+setTimeout(() => text.remove(), 5000);
+
+});
+</script>
+<!-- ✨ 烟花特效在最上层，不再让背景变黑 ✨ -->
+<canvas id="fireworks"></canvas>
+<script>
+const canvas = document.getElementById("fireworks");
+const ctx = canvas.getContext("2d");
+let particles = [];
+resize();
+window.addEventListener("resize", resize);
+
+function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+
+// 让 canvas 覆盖最上层
+canvas.style.position = "fixed";
+canvas.style.left = 0;
+canvas.style.top = 0;
+canvas.style.width = "100%";
+canvas.style.height = "100%";
+canvas.style.pointerEvents = "none";
+canvas.style.zIndex = "999999"; // 高到能覆盖所有文字和图片
+
+function random(min, max) {
+    return Math.random() * (max - min) + min;
+}
+
+class Particle {
+    constructor(x, y, color) {
+        this.x = x;
+        this.y = y;
+        this.color = color;
+        this.radius = random(2, 4);
+        this.alpha = 1;
+        this.velocity = {
+            x: random(-6, 6),
+            y: random(-6, 6)
+        };
+    }
+    update() {
+        this.x += this.velocity.x;
+        this.y += this.velocity.y;
+        this.velocity.y += 0.05; // 模拟重力
+        this.alpha -= 0.01; // 慢慢淡出
+    }
+    draw() {
+        ctx.globalAlpha = this.alpha;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fillStyle = this.color;
+        ctx.fill();
+        ctx.globalAlpha = 1;
+		ctx.shadowBlur = 50;
+		ctx.shadowColor = this.color;
+
+    }
+}
+
+function createFirework(x, y) {
+    const color = `hsl(${Math.random() * 360}, 100%, 60%)`;
+    for (let i = 0; i < 40; i++) {
+        particles.push(new Particle(x, y, color));
+    }
+}
+
+function animate() {
+    // 清空画布，不再添加黑幕残影
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    particles.forEach((p, i) => {
+        p.update();
+        p.draw();
+        if (p.alpha <= 0) particles.splice(i, 1);
+    });
+    requestAnimationFrame(animate);
+}
+animate();
+
+// 点击时触发烟花
+document.addEventListener("click", (e) => {
+    createFirework(e.clientX, e.clientY);
+});
+</script>
+<!-- ✨ 烟花特效在最上层，不再让背景变黑 ✨ -->
+<canvas id="fireworks"></canvas>
+<script>
+const canvas = document.getElementById("fireworks");
+const ctx = canvas.getContext("2d");
+let particles = [];
+resize();
+window.addEventListener("resize", resize);
+
+function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+
+// 让 canvas 覆盖最上层
+canvas.style.position = "fixed";
+canvas.style.left = 0;
+canvas.style.top = 0;
+canvas.style.width = "100%";
+canvas.style.height = "100%";
+canvas.style.pointerEvents = "none";
+canvas.style.zIndex = "999999"; // 高到能覆盖所有文字和图片
+
+function random(min, max) {
+    return Math.random() * (max - min) + min;
+}
+
+class Particle {
+    constructor(x, y, color) {
+        this.x = x;
+        this.y = y;
+        this.color = color;
+        this.radius = random(2, 4);
+        this.alpha = 1;
+        this.velocity = {
+            x: random(-6, 6),
+            y: random(-6, 6)
+        };
+    }
+    update() {
+        this.x += this.velocity.x;
+        this.y += this.velocity.y;
+        this.velocity.y += 0.05; // 模拟重力
+        this.alpha -= 0.01; // 慢慢淡出
+    }
+    draw() {
+        ctx.globalAlpha = this.alpha;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fillStyle = this.color;
+        ctx.fill();
+        ctx.globalAlpha = 1;
+    }
+}
+
+function createFirework(x, y) {
+    const color = `hsl(${Math.random() * 360}, 100%, 60%)`;
+    for (let i = 0; i < 40; i++) {
+        particles.push(new Particle(x, y, color));
+    }
+}
+
+function animate() {
+    // 清空画布，不再添加黑幕残影
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    particles.forEach((p, i) => {
+        p.update();
+        p.draw();
+        if (p.alpha <= 0) particles.splice(i, 1);
+    });
+    requestAnimationFrame(animate);
+}
+animate();
+
+// 点击时触发烟花
+document.addEventListener("click", (e) => {
+    createFirework(e.clientX, e.clientY);
+});
+</script>
+</body>
+</html>
