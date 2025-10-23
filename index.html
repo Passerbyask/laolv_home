@@ -8,7 +8,6 @@
     <style>
         body {
 			cursor: url("img/favicon.png") 16 16, auto;
-
             margin: 0;
             padding: 20px;
             font-family: Arial, sans-serif;
@@ -19,14 +18,14 @@
             animation: rgb-background 10s ease infinite;
             min-height: 100vh;
         }
-        
+
         /* RGB背景动画 */
         @keyframes rgb-background {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
         }
-        
+
         /* RGB文字效果 */
         .rgb-text {
             background: linear-gradient(90deg, #ff0000, #ff9900, #33cc33, #3399ff, #cc33ff, #ff0066);
@@ -36,34 +35,34 @@
             color: transparent;
             animation: rgb-flow 4s linear infinite;
         }
-        
+
         @keyframes rgb-flow {
             0% { background-position: 0% 50%; }
             100% { background-position: 400% 50%; }
         }
-        
+
         h1 {
             font-size: 2.5rem;
             margin: 10px 0;
         }
-        
+
         h2 {
             font-size: 2rem;
             margin: 10px 0;
         }
-        
+
         h3 {
             font-size: 1.5rem;
             margin: 10px 0;
         }
-        
+
         p {
             font-size: 1.2rem;
             margin: 15px 0;
         }
-        
+
         .content {
-            background-color: rgba(255, 255, 255, 0.8);
+            background-color: rgba(255, 255, 255, 0.1);
             display: inline-block;
             padding: 20px;
             border-radius: 10px;
@@ -95,66 +94,78 @@
             <img src="img/wuxianlian.gif" width="500" height="500">
         </div>
     </div>
-	<script>
-	document.addEventListener("mousemove", function(e) {
-	    // 创建拖尾图片
-	    const img = document.createElement("img");
-	    img.src = "img/DSC_2798.JPG"; // ← 改成你自己的图片路径，例如 "images/star.png"
-	    img.style.position = "fixed";
-	    img.style.left = e.clientX + "px";
-	    img.style.top = e.clientY + "px";
-	    img.style.width = " 15px"; // 拖尾图片大小
-	    img.style.height = "15px";
-	    img.style.pointerEvents = "none";
-	    img.style.zIndex = "9999";
-	    img.style.opacity = "1";
-	    img.style.transform = "translate(-50%, -50%) scale(1)";
-	    img.style.transition = "opacity 1s ease, transform 1s ease";
-	    document.body.appendChild(img);
-	
-	    // 动画：放大并消失
-	    requestAnimationFrame(() => {
-	        img.style.opacity = "0";
-	        img.style.transform = "translate(-50%, -50%) scale(2)";
-	    });
-	
-	    // 删除元素
-	    setTimeout(() => img.remove(), 500);
-	});
-	</script>
+
+<!-- 🌌 背景切换按钮 -->
+<button id="toggleBackground" style="
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 10000;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.8);
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(0,0,0,0.3);
+">切换背景</button>
+
+<!-- 🌠 星空背景 -->
+<canvas id="starfield"></canvas>
+
 <script>
+// ============ 鼠标拖尾特效 ============
+document.addEventListener("mousemove", function(e) {
+    const img = document.createElement("img");
+    img.src = "img/DSC_2798.JPG";
+    img.style.position = "fixed";
+    img.style.left = e.clientX + "px";
+    img.style.top = e.clientY + "px";
+    img.style.width = "15px";
+    img.style.height = "15px";
+    img.style.pointerEvents = "none";
+    img.style.zIndex = "9999";
+    img.style.opacity = "1";
+    img.style.transform = "translate(-50%, -50%) scale(1)";
+    img.style.transition = "opacity 1s ease, transform 1s ease";
+    document.body.appendChild(img);
+
+    requestAnimationFrame(() => {
+        img.style.opacity = "0";
+        img.style.transform = "translate(-50%, -50%) scale(2)";
+    });
+
+    setTimeout(() => img.remove(), 500);
+});
+
+// ============ 点击文字特效 ============
 document.addEventListener("click", function(e) {
     const text = document.createElement("span");
-    text.textContent = "desuwa~~~"; // 点击出现的文字
+    text.textContent = "desuwa~~~";
     text.style.position = "fixed";
     text.style.left = e.clientX + "px";
     text.style.top = e.clientY + "px";
     text.style.fontSize = "40px";
     text.style.fontWeight = "bold";
-    text.style.color = `hsl(${Math.random() * 360}, 80%, 60%)`; // 随机颜色
+    text.style.color = `hsl(${Math.random() * 360}, 80%, 60%)`;
     text.style.pointerEvents = "none";
     text.style.zIndex = "9999";
     text.style.userSelect = "none";
     text.style.transform = "translate(-50%, -50%)";
-    text.style.transition = "transform 1s ease-out, opacity 1s ease-out";
+    text.style.transition = "transform 5s ease-out, opacity 5s ease-out";
     document.body.appendChild(text);
 
-    // 启动动画
     requestAnimationFrame(() => {
         text.style.transform = "translate(-50%, -150%)";
         text.style.opacity = "0";
     });
 
-    // 清理元素
-text.style.transition = "transform 5s ease-out, opacity 5s ease-out";
-setTimeout(() => text.remove(), 5000);
-
+    setTimeout(() => text.remove(), 5000);
 });
-</script>
-<!-- ✨ 烟花特效在最上层，不再让背景变黑 ✨ -->
-<canvas id="fireworks"></canvas>
-<script>
-const canvas = document.getElementById("fireworks");
+
+// ============ 烟花特效 ============
+const canvas = document.createElement("canvas");
+document.body.appendChild(canvas);
 const ctx = canvas.getContext("2d");
 let particles = [];
 resize();
@@ -165,14 +176,13 @@ function resize() {
     canvas.height = window.innerHeight;
 }
 
-// 让 canvas 覆盖最上层
 canvas.style.position = "fixed";
 canvas.style.left = 0;
 canvas.style.top = 0;
 canvas.style.width = "100%";
 canvas.style.height = "100%";
 canvas.style.pointerEvents = "none";
-canvas.style.zIndex = "999999"; // 高到能覆盖所有文字和图片
+canvas.style.zIndex = "999999";
 
 function random(min, max) {
     return Math.random() * (max - min) + min;
@@ -185,16 +195,13 @@ class Particle {
         this.color = color;
         this.radius = random(2, 4);
         this.alpha = 1;
-        this.velocity = {
-            x: random(-6, 6),
-            y: random(-6, 6)
-        };
+        this.velocity = { x: random(-6, 6), y: random(-6, 6) };
     }
     update() {
         this.x += this.velocity.x;
         this.y += this.velocity.y;
-        this.velocity.y += 0.05; // 模拟重力
-        this.alpha -= 0.01; // 慢慢淡出
+        this.velocity.y += 0.05;
+        this.alpha -= 0.01;
     }
     draw() {
         ctx.globalAlpha = this.alpha;
@@ -203,9 +210,8 @@ class Particle {
         ctx.fillStyle = this.color;
         ctx.fill();
         ctx.globalAlpha = 1;
-		ctx.shadowBlur = 50;
-		ctx.shadowColor = this.color;
-
+        ctx.shadowBlur = 50;
+        ctx.shadowColor = this.color;
     }
 }
 
@@ -217,9 +223,7 @@ function createFirework(x, y) {
 }
 
 function animate() {
-    // 清空画布，不再添加黑幕残影
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-
     particles.forEach((p, i) => {
         p.update();
         p.draw();
@@ -228,91 +232,94 @@ function animate() {
     requestAnimationFrame(animate);
 }
 animate();
-
-// 点击时触发烟花
 document.addEventListener("click", (e) => {
     createFirework(e.clientX, e.clientY);
 });
-</script>
-<!-- ✨ 烟花特效在最上层，不再让背景变黑 ✨ -->
-<canvas id="fireworks"></canvas>
-<script>
-const canvas = document.getElementById("fireworks");
-const ctx = canvas.getContext("2d");
-let particles = [];
-resize();
-window.addEventListener("resize", resize);
 
-function resize() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-}
+// ============ 背景切换逻辑 ============
+(() => {
+    const starCanvas = document.getElementById("starfield");
+    const ctxStar = starCanvas.getContext("2d");
+    let stars = [];
+    let useStars = false;
 
-// 让 canvas 覆盖最上层
-canvas.style.position = "fixed";
-canvas.style.left = 0;
-canvas.style.top = 0;
-canvas.style.width = "100%";
-canvas.style.height = "100%";
-canvas.style.pointerEvents = "none";
-canvas.style.zIndex = "999999"; // 高到能覆盖所有文字和图片
+    const bodyStyle = window.getComputedStyle(document.body);
+    const originalBackground = bodyStyle.background || "";
+    const originalBackgroundSize = bodyStyle.backgroundSize || "";
+    const originalAnimation = bodyStyle.animation || "";
 
-function random(min, max) {
-    return Math.random() * (max - min) + min;
-}
-
-class Particle {
-    constructor(x, y, color) {
-        this.x = x;
-        this.y = y;
-        this.color = color;
-        this.radius = random(2, 4);
-        this.alpha = 1;
-        this.velocity = {
-            x: random(-6, 6),
-            y: random(-6, 6)
-        };
+    function resizeStars() {
+        starCanvas.width = window.innerWidth;
+        starCanvas.height = window.innerHeight;
     }
-    update() {
-        this.x += this.velocity.x;
-        this.y += this.velocity.y;
-        this.velocity.y += 0.05; // 模拟重力
-        this.alpha -= 0.01; // 慢慢淡出
-    }
-    draw() {
-        ctx.globalAlpha = this.alpha;
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-        ctx.fillStyle = this.color;
-        ctx.fill();
-        ctx.globalAlpha = 1;
-    }
-}
+    window.addEventListener("resize", resizeStars);
+    resizeStars();
 
-function createFirework(x, y) {
-    const color = `hsl(${Math.random() * 360}, 100%, 60%)`;
-    for (let i = 0; i < 40; i++) {
-        particles.push(new Particle(x, y, color));
+    function createStars() {
+        stars = [];
+        const count = Math.max(100, Math.floor((starCanvas.width * starCanvas.height) / 8000));
+        for (let i = 0; i < count; i++) {
+            stars.push({
+                x: Math.random() * starCanvas.width,
+                y: Math.random() * starCanvas.height,
+                radius: Math.random() * 1.6,
+                alpha: Math.random(),
+                speed: 0.002 + Math.random() * 0.006,
+            });
+        }
     }
-}
 
-function animate() {
-    // 清空画布，不再添加黑幕残影
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    function animateStars() {
+        if (useStars) {
+            ctxStar.fillStyle = "rgba(5, 12, 25, 0.25)";
+            ctxStar.fillRect(0, 0, starCanvas.width, starCanvas.height);
+            stars.forEach(s => {
+                s.alpha += s.speed;
+                if (s.alpha > 1) { s.alpha = 1; s.speed *= -1; }
+                if (s.alpha < 0) { s.alpha = 0; s.speed *= -1; }
+                ctxStar.beginPath();
+                ctxStar.arc(s.x, s.y, s.radius, 0, Math.PI * 2);
+                ctxStar.fillStyle = `rgba(255,255,255,${s.alpha})`;
+                ctxStar.fill();
+            });
+        } else {
+            ctxStar.clearRect(0, 0, starCanvas.width, starCanvas.height);
+        }
+        requestAnimationFrame(animateStars);
+    }
 
-    particles.forEach((p, i) => {
-        p.update();
-        p.draw();
-        if (p.alpha <= 0) particles.splice(i, 1);
+    starCanvas.style.position = "fixed";
+    starCanvas.style.left = 0;
+    starCanvas.style.top = 0;
+    starCanvas.style.width = "100%";
+    starCanvas.style.height = "100%";
+    starCanvas.style.pointerEvents = "none";
+    starCanvas.style.zIndex = "-1";
+
+    createStars();
+    animateStars();
+
+    const toggleBtn = document.getElementById("toggleBackground");
+    let rgbMode = true;
+
+    toggleBtn.addEventListener("click", () => {
+        rgbMode = !rgbMode;
+        if (rgbMode) {
+            document.body.style.background = originalBackground;
+            document.body.style.backgroundSize = originalBackgroundSize;
+            document.body.style.animation = originalAnimation;
+            useStars = false;
+            toggleBtn.textContent = "切换背景";
+        } else {
+            document.body.style.animation = "none";
+            document.body.style.background = "radial-gradient(ellipse at bottom, #0d1a26 0%, #000000 100%)";
+            document.body.style.backgroundSize = "cover";
+            createStars();
+            useStars = true;
+            toggleBtn.textContent = "返回RGB背景";
+        }
     });
-    requestAnimationFrame(animate);
-}
-animate();
-
-// 点击时触发烟花
-document.addEventListener("click", (e) => {
-    createFirework(e.clientX, e.clientY);
-});
+})();
 </script>
 </body>
 </html>
