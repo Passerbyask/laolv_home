@@ -20,15 +20,20 @@
 </head>
 <body>
 
-  <!-- ===================== 背景动画层（柔光 + 尘埃粒子） =====================
-       · 三个 .orb 是缓慢漂移的柔光色块（纯装饰，aria-hidden）
+  <!-- ===================== 背景动画层（Beams 扫射光束 + 氛围光 + 尘埃粒子） =====================
+       · 4 条 .beam 是斜向扫过的柔光光束（React Bits Beams 风格），深色底上扫动很有冲击力
+       · .aurora-glow 是中央极淡的氛围光（增强纵深但不抢眼）
        · .bg-canvas 是尘埃粒子画布，由 js/main.js 的 initBgParticles 驱动
-       · 想调整动画强度/颜色看 css/style.css 的背景动画层区块
+       · 想调整光束颜色/速度/数量看 css/style.css 的背景动画层区块
   ======================================================================== -->
-  <div class="bg-orbs" aria-hidden="true">
-    <span class="orb orb-1"></span>
-    <span class="orb orb-2"></span>
-    <span class="orb orb-3"></span>
+  <div class="bg-anim" aria-hidden="true">
+    <div class="beams">
+      <span class="beam beam-1"></span>
+      <span class="beam beam-2"></span>
+      <span class="beam beam-3"></span>
+      <span class="beam beam-4"></span>
+    </div>
+    <span class="aurora-glow"></span>
   </div>
   <canvas class="bg-canvas" aria-hidden="true"></canvas>
 
@@ -84,17 +89,40 @@
         </div>
 
         <div class="hero-photo">
-          <!-- 照片 X 光组件：常服在下，学士服在上（悬停时圆形透视出学士服）
-               · 想换照片：替换 img/casual.jpg 和 img/graduation.jpg（同名覆盖即可）
-               · 交互逻辑在 js/main.js 的 initPhotoXray
-               · 样式在 css/style.css 的“Hero 照片组件”区块 -->
-          <div class="photo-container">
-            <img src="img/casual.jpg" alt="常服照片" class="photo-base" />
-            <img src="img/graduation.jpg" alt="学士服照片" class="photo-xray" />
-            <canvas class="particle-canvas"></canvas>
-            <div class="photo-xray-mask"></div>
-            <div class="photo-xray-ring"></div>
-            <p class="photo-xray-label">HOVER TO EXPLORE</p>
+          <!-- ============ 工卡（ID Card）效果 ============
+               · 结构：.id-card 卡壳（磨砂玻璃 + 聚光灯层 + 倾斜）
+                        ├─ .photo-container 照片 X 光组件（常服/学士服，悬停透视）
+                        ├─ .id-card-info 卡片底部姓名 / 职位信息条
+                        └─ .id-spotlight 聚光灯层（鼠标跟随的高光）
+               · 交互逻辑在 js/main.js 的 initIdCard（聚光灯+倾斜）与 initPhotoXray（X 光）
+               · 样式在 css/style.css 的“工卡”区块
+               · 想换照片：替换 img/casual.jpg 和 img/graduation.jpg（同名覆盖）
+          ================================================= -->
+          <div class="id-card" id="idCard">
+            <div class="id-spotlight" aria-hidden="true"></div>
+
+            <div class="photo-container">
+              <img src="img/casual.jpg" alt="常服照片" class="photo-base" />
+              <img src="img/graduation.jpg" alt="学士服照片" class="photo-xray" />
+              <canvas class="particle-canvas"></canvas>
+              <div class="photo-xray-mask"></div>
+              <div class="photo-xray-ring"></div>
+              <p class="photo-xray-label" data-i18n="cardHover">悬停查看</p>
+            </div>
+
+            <div class="id-card-info">
+              <div class="id-card-name">
+                <span class="id-name" data-i18n="cardName">史瑞祺</span>
+                <span class="id-name-en" data-i18n="cardNameEn">SHI RUIQI</span>
+              </div>
+              <div class="id-card-role">
+                <span data-i18n="cardRole">地理信息科学 · 2026 届</span>
+              </div>
+              <div class="id-card-divider"></div>
+              <div class="id-card-id">
+                <span data-i18n="cardNo">NO. 2026 · GEE RESEARCHER</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -402,6 +430,17 @@
     </p>
     <a class="footer-top" href="#home" data-i18n="footerTop">回到顶部 ↑</a>
   </footer>
+
+  <!-- ===================== 自定义光标 =====================
+       · .cursor-dot 橙色小点，紧贴鼠标
+       · .cursor-ring 延迟跟随的圆环，悬停可交互元素时放大
+       · .cursor-trail 拖尾粒子画布（橙色微光，逐渐消散）
+       · 逻辑在 js/main.js 的 initCustomCursor
+       · 想关掉自定义光标：删除这三个元素 + CSS 里的 cursor:none 规则
+  ====================================================== -->
+  <div class="cursor-dot" aria-hidden="true"></div>
+  <div class="cursor-ring" aria-hidden="true"></div>
+  <canvas class="cursor-trail" aria-hidden="true"></canvas>
 
   <script src="js/main.js"></script>
 </body>

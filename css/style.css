@@ -65,7 +65,19 @@ section { scroll-margin-top: var(--header-h); }
    - 尘埃粒子：逻辑在 js/main.js 的 initBgParticles（密度在 makeParticle/resize）
    ============================================================ */
 
-.bg-orbs,
+/* ============================================================
+   背景动画层 — Beams 扫射光束 + 氛围光 + 尘埃粒子
+   ------------------------------------------------------------
+   视觉：4 条斜向柔光光束在深色背景上缓慢扫过（舞台射灯感），
+         中央一层极淡氛围光增强纵深，粒子细节叠加其上。
+   想调背景动画：
+   - 光束颜色/透明度：改 .beam-1~4 的 background（linear-gradient 里的 rgba）
+   - 光束扫动速度/范围：改 @keyframes beam-sweep-* 的时长与 translate 值
+   - 光束数量：增删 index.html 里 .beams 的 span（复制一个带新类名 + 加对应样式）
+   - 尘埃粒子：逻辑在 js/main.js 的 initBgParticles（密度在 makeParticle/resize）
+   ============================================================ */
+
+.bg-anim,
 .bg-canvas {
   position: fixed;
   inset: 0;
@@ -75,55 +87,109 @@ section { scroll-margin-top: var(--header-h); }
 
 .bg-canvas { opacity: 0.9; }
 
-.bg-orbs { overflow: hidden; }
+.bg-anim { overflow: hidden; }
 
-.orb {
+/* 光束容器 */
+.beams {
   position: absolute;
-  border-radius: 50%;
-  filter: blur(70px);
+  inset: 0;
+}
+
+/* 单条光束：宽长条 + 渐变羽化 + 模糊 + 固定倾斜角，动画沿水平方向扫动 */
+.beam {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 210vw;
+  height: 16vw;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 128, 0, 0.13) 50%,
+    transparent 100%
+  );
+  filter: blur(46px);
+  transform: translate(-50%, -50%) rotate(-24deg);
   will-change: transform;
 }
 
-.orb-1 {
-  width: 42vw;
-  height: 42vw;
-  left: -10vw;
-  top: -12vw;
-  background: radial-gradient(circle, rgba(255, 128, 0, 0.16) 0%, transparent 70%);
-  animation: orb-drift-1 34s ease-in-out infinite alternate;
+.beam-2 {
+  height: 12vw;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(70, 150, 190, 0.10) 50%,
+    transparent 100%
+  );
+  animation: beam-sweep-2 48s ease-in-out infinite alternate-reverse;
 }
 
-.orb-2 {
-  width: 50vw;
-  height: 50vw;
-  right: -16vw;
-  top: 30vh;
-  background: radial-gradient(circle, rgba(30, 120, 150, 0.13) 0%, transparent 70%);
-  animation: orb-drift-2 42s ease-in-out infinite alternate;
+.beam-3 {
+  height: 22vw;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 200, 150, 0.09) 50%,
+    transparent 100%
+  );
+  animation: beam-sweep-3 56s ease-in-out infinite alternate;
 }
 
-.orb-3 {
-  width: 26vw;
-  height: 26vw;
-  left: 30vw;
-  bottom: -14vw;
-  background: radial-gradient(circle, rgba(255, 128, 0, 0.10) 0%, transparent 70%);
-  animation: orb-drift-3 38s ease-in-out infinite alternate;
+.beam-4 {
+  height: 9vw;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(150, 130, 255, 0.09) 50%,
+    transparent 100%
+  );
+  animation: beam-sweep-4 38s ease-in-out infinite alternate-reverse;
 }
 
-@keyframes orb-drift-1 {
-  from { transform: translate(0, 0) scale(1); }
-  to { transform: translate(9vw, 7vh) scale(1.15); }
+.beam-1 { animation: beam-sweep-1 44s ease-in-out infinite alternate; }
+
+/* 四条光束各自的扫动路径（角度固定，仅水平位移，形成“扫过”感） */
+@keyframes beam-sweep-1 {
+  from { transform: translate(-70vw, -50%) rotate(-24deg); }
+  to { transform: translate(30vw, -50%) rotate(-24deg); }
 }
 
-@keyframes orb-drift-2 {
-  from { transform: translate(0, 0) scale(1.1); }
-  to { transform: translate(-8vw, -6vh) scale(0.95); }
+@keyframes beam-sweep-2 {
+  from { transform: translate(35vw, -50%) rotate(-32deg); }
+  to { transform: translate(-65vw, -50%) rotate(-32deg); }
 }
 
-@keyframes orb-drift-3 {
-  from { transform: translate(0, 0) scale(0.95); }
-  to { transform: translate(6vw, -8vh) scale(1.12); }
+@keyframes beam-sweep-3 {
+  from { transform: translate(-55vw, -50%) rotate(-18deg); }
+  to { transform: translate(45vw, -50%) rotate(-18deg); }
+}
+
+@keyframes beam-sweep-4 {
+  from { transform: translate(20vw, -50%) rotate(-40deg); }
+  to { transform: translate(-80vw, -50%) rotate(-40deg); }
+}
+
+/* 中央氛围光：极淡的橙青色光晕，增强纵深，几乎不可察觉但让背景不单调 */
+.aurora-glow {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 90vw;
+  height: 90vw;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(
+    ellipse at center,
+    rgba(255, 128, 0, 0.07) 0%,
+    rgba(70, 150, 190, 0.05) 40%,
+    transparent 70%
+  );
+  filter: blur(90px);
+  animation: glow-breathe 12s ease-in-out infinite alternate;
+}
+
+@keyframes glow-breathe {
+  from { opacity: 0.6; transform: translate(-50%, -50%) scale(1); }
+  to { opacity: 1; transform: translate(-50%, -50%) scale(1.12); }
 }
 
 /* 内容层置于背景动画之上 */
@@ -323,6 +389,132 @@ main,
   z-index: 2;
   display: flex;
   justify-content: center;
+  perspective: 1200px;   /* 3D 倾斜的透视距离，越大倾斜幅度越小 */
+}
+
+/* ============================================================
+   工卡（ID Card）— 磨砂玻璃卡片 + 聚光灯 + 轻微倾斜
+   ------------------------------------------------------------
+   · .id-card 是卡壳：磨砂玻璃质感、圆角、信息条；鼠标移动时轻微 3D 倾斜
+   · .id-spotlight 是聚光灯层：鼠标跟随的径向高光（JS 里更新坐标）
+   · .photo-container 保留原 X 光交互（见下方对应注释）
+   · 想调倾斜幅度：改 .id-card.is-tilting 的 rotateX/rotateY 上限（JS 里）
+   ============================================================ */
+
+.id-card {
+  position: relative;
+  width: clamp(280px, 30vw, 450px);
+  padding: 14px;
+  border-radius: 22px;
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.10), rgba(255, 255, 255, 0.03));
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow:
+    0 24px 60px -18px rgba(0, 0, 0, 0.7),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  transform-style: preserve-3d;
+  transform: rotateX(0deg) rotateY(0deg);
+  transition: transform 0.18s ease-out, box-shadow 0.3s ease;
+  will-change: transform;
+}
+
+.id-card.is-tilting {
+  transition: transform 0.08s ease-out;
+}
+
+.id-card.is-hovering-card {
+  box-shadow:
+    0 30px 70px -18px rgba(255, 128, 0, 0.28),
+    0 24px 60px -18px rgba(0, 0, 0, 0.7),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+/* 聚光灯层：跟随鼠标的径向高光 */
+.id-spotlight {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 22px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: radial-gradient(
+    circle at var(--sx, 50%) var(--sy, 50%),
+    rgba(255, 200, 120, 0.18) 0%,
+    rgba(255, 128, 0, 0.06) 35%,
+    transparent 65%
+  );
+  z-index: 3;
+}
+
+.id-card:hover .id-spotlight,
+.id-card.is-tilting .id-spotlight { opacity: 1; }
+
+/* 卡片内照片 X 光组件（沿用原尺寸，去掉原边框，融入卡壳） */
+.id-card .photo-container {
+  width: 100%;
+  height: clamp(300px, 32vw, 480px);
+  border-radius: 14px;
+  overflow: hidden;
+  border: none;
+  background: var(--panel);
+  cursor: none;
+}
+
+/* 卡片底部信息条 */
+.id-card-info {
+  padding: 14px 8px 6px;
+  text-align: center;
+}
+
+.id-card-name {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 10px;
+}
+
+.id-name {
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: 1.35rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text);
+}
+
+.id-name-en {
+  font-size: 0.72rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.id-card-role {
+  margin-top: 4px;
+  font-size: 0.82rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.id-card-divider {
+  width: 60px;
+  height: 2px;
+  margin: 12px auto 8px;
+  background: var(--accent);
+  border-radius: 2px;
+  opacity: 0.8;
+}
+
+.id-card-id {
+  font-size: 0.66rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.4);
 }
 
 .photo-container {
@@ -1095,6 +1287,80 @@ main,
 .skill-grid .reveal:nth-child(3) { transition-delay: 0.2s; }
 
 /* ============================================================
+   自定义光标 — 橙色点 + 跟随环 + 拖尾粒子
+   ------------------------------------------------------------
+   · .cursor-dot 橙色小点：紧贴鼠标，始终在鼠标位置
+   · .cursor-ring 圆环：延迟跟随鼠标（平滑插值），悬停可交互元素时放大
+   · .cursor-trail 画布：鼠标移动时喷射橙色微光粒子（淡拖尾）
+   · 逻辑在 js/main.js 的 initCustomCursor
+   · 想调整：拖尾强度/颜色改 .cursor-trail 与 JS 里的 fillStyle/速度
+   · 想完全关闭：删掉这三处样式 + HTML 里的三个元素，并恢复 cursor 默认
+   ============================================================ */
+
+/* 全局隐藏系统光标（桌面端），改用自定义光标 */
+@media (hover: hover) and (pointer: fine) {
+  body,
+  body a,
+  body button,
+  body .photo-container,
+  body .id-card {
+    cursor: none;
+  }
+
+  /* 橙色小点：紧贴鼠标 */
+  .cursor-dot {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 8px;
+    height: 8px;
+    margin: -4px 0 0 -4px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 8px rgba(255, 128, 0, 0.6);
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate3d(0, 0, 0);
+    will-change: transform;
+  }
+
+  /* 跟随圆环：延迟跟随，平滑插值由 JS 驱动 */
+  .cursor-ring {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 36px;
+    height: 36px;
+    margin: -18px 0 0 -18px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(255, 128, 0, 0.65);
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate3d(0, 0, 0);
+    will-change: transform;
+    transition: width 0.25s ease, height 0.25s ease, margin 0.25s ease,
+                border-color 0.25s ease, background 0.25s ease;
+  }
+
+  /* 悬停可交互元素时圆环放大（按钮/链接/卡片/照片） */
+  .cursor-ring.is-active {
+    width: 60px;
+    height: 60px;
+    margin: -30px 0 0 -30px;
+    border-color: rgba(255, 128, 0, 0.9);
+    background: rgba(255, 128, 0, 0.10);
+  }
+
+  /* 拖尾粒子画布：全屏，指针不响应 */
+  .cursor-trail {
+    position: fixed;
+    inset: 0;
+    z-index: 9997;
+    pointer-events: none;
+  }
+}
+
+/* ============================================================
    响应式
    移动端适配：960px 和 760px 两档断点
    ============================================================ */
@@ -1176,7 +1442,8 @@ main,
   .hero-glow,
   .kicker-dot,
   .radar-dot,
-  .orb,
+  .beam,
+  .aurora-glow,
   .bg-canvas { animation: none; }
   .reveal { opacity: 1; transform: none; transition: none; }
 }

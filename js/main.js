@@ -38,6 +38,13 @@
       heroNextLabel: "NEXT STEP",
       heroNextValue: "2026 届应届生 · 求职中",
 
+      // 工卡
+      cardHover: "悬停查看",
+      cardName: "史瑞祺",
+      cardNameEn: "SHI RUIQI",
+      cardRole: "地理信息科学 · 2026 届",
+      cardNo: "NO. 2026 · GEE RESEARCHER",
+
       // 关于我
       aboutTitle: "用代码和空间数据理解世界",
       aboutBody:
@@ -139,6 +146,13 @@
       heroCta2: "Contact Me",
       heroNextLabel: "NEXT STEP",
       heroNextValue: "2026 Graduate · Open to work",
+
+      // ID Card
+      cardHover: "Hover to explore",
+      cardName: "Shi Ruiqi",
+      cardNameEn: "SHI RUIQI",
+      cardRole: "GIS · Class of 2026",
+      cardNo: "NO. 2026 · GEE RESEARCHER",
 
       // About
       aboutTitle: "Understanding the world with code and spatial data",
@@ -569,6 +583,170 @@
     rafId = requestAnimationFrame(draw);
   }
 
+  /* ---------- 工卡交互：聚光灯跟随 + 轻微 3D 倾斜 ----------
+     作用：Hero 区的 .id-card（工卡）在鼠标移动时：
+     - 聚光灯层（.id-spotlight）的高光中心跟随鼠标（--sx / --sy 变量）
+     - 卡片整体做轻微 3D 倾斜（rotateX / rotateY，最大约 ±5°）
+     与 X 光互不干扰：X 光监听 .photo-container，这里监听整个 .id-card。
+     常用调整：
+     - 倾斜幅度：改下面的 MAX_TILT（当前 5 度）
+     - 聚光灯强度/颜色：改 css/style.css 里 .id-spotlight 的 radial-gradient
+  */
+  function initIdCard() {
+    var card = document.getElementById("idCard");
+    if (!card) return;
+    var spotlight = card.querySelector(".id-spotlight");
+    var MAX_TILT = 5;   // 最大倾斜角度（度）
+    var rafId = null;
+    var targetRx = 0, targetRy = 0, curRx = 0, curRy = 0;
+
+    // 每帧向目标角度插值（平滑倾斜）
+    function animateTilt() {
+      curRx += (targetRx - curRx) * 0.15;
+      curRy += (targetRy - curRy) * 0.15;
+      card.style.transform = "rotateX(" + curRx + "deg) rotateY(" + curRy + "deg)";
+      if (Math.abs(targetRx - curRx) > 0.01 || Math.abs(targetRy - curRy) > 0.01) {
+        rafId = requestAnimationFrame(animateTilt);
+      } else {
+        rafId = null;
+      }
+    }
+
+    card.addEventListener("mousemove", function (e) {
+      var rect = card.getBoundingClientRect();
+      var px = (e.clientX - rect.left) / rect.width;   // 0..1 水平位置
+      var py = (e.clientY - rect.top) / rect.height;   // 0..1 垂直位置
+
+      // 聚光灯跟随（用 CSS 变量，.id-spotlight 的 radial-gradient 引用）
+      if (spotlight) {
+        spotlight.style.setProperty("--sx", (px * 100).toFixed(1) + "%");
+        spotlight.style.setProperty("--sy", (py * 100).toFixed(1) + "%");
+      }
+
+      // 倾斜：向鼠标方向倾斜，幅度随位置
+      targetRy = (px - 0.5) * 2 * MAX_TILT;
+      targetRx = (0.5 - py) * 2 * MAX_TILT;
+      card.classList.add("is-tilting");
+      if (!rafId) animateTilt();
+    });
+
+    card.addEventListener("mouseenter", function () {
+      card.classList.add("is-hovering-card");
+    });
+
+    card.addEventListener("mouseleave", function () {
+      card.classList.remove("is-tilting", "is-hovering-card");
+      targetRx = 0;
+      targetRy = 0;
+      if (!rafId) animateTilt();
+    });
+  }
+
+  /* ---------- 自定义光标：点跟随 + 环延迟 + 拖尾粒子 ----------
+     作用：桌面端（有鼠标的设备）用橙色小点 + 延迟圆环替代系统光标，
+           鼠标移动时喷出淡橙色粒子拖尾。
+     - 仅在 (hover:hover) 且 (pointer:fine) 的设备启用（CSS 里同步控制显示）
+     - 可交互元素（a/button/卡片/照片）悬停时圆环放大（is-active）
+     常用调整：
+     - 拖尾粒子颜色/大小/速度：改 spawnTrail / Particle 的 fillStyle / speed / size
+     - 圆环延迟跟随时的手感：改下面 ring 插值系数 0.16（越大越跟手）
+     - 想完全关闭：删掉 index.html 的 .cursor-dot/.cursor-ring/.cursor-trail 三个元素
+  */
+  function initCustomCursor() {
+    // 仅在支持悬停的桌面设备启用
+    if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+
+    var dot = document.querySelector(".cursor-dot");
+    var ring = document.querySelector(".cursor-ring");
+    var trailCanvas = document.querySelector(".cursor-trail");
+    if (!dot || !ring || !trailCanvas) return;
+
+    var ctx = trailCanvas.getContext("2d");
+    var ringX = -100, ringY = -100;   // 圆环当前坐标（延迟跟随）
+    var mouseX = -100, mouseY = -100; // 鼠标目标坐标
+    var trail = [];
+    var rafId = null;
+    var lastMove = 0;
+    var w = 0, h = 0;
+
+    function resize() {
+      var dpr = Math.min(window.devicePixelRatio || 1, 2);
+      w = window.innerWidth;
+      h = window.innerHeight;
+      trailCanvas.width = w * dpr;
+      trailCanvas.height = h * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+    resize();
+    window.addEventListener("resize", resize);
+
+    // 拖尾粒子
+    function spawnTrail(x, y) {
+      var now = Date.now();
+      if (now - lastMove < 14) return;   // 限频，避免拖尾过密
+      lastMove = now;
+      for (var i = 0; i < 2; i++) {
+        trail.push({
+          x: x + (Math.random() - 0.5) * 6,
+          y: y + (Math.random() - 0.5) * 6,
+          vx: (Math.random() - 0.5) * 0.7,
+          vy: (Math.random() - 0.5) * 0.7,
+          life: 1,
+          decay: 0.03 + Math.random() * 0.03,
+          size: 1.2 + Math.random() * 2
+        });
+      }
+    }
+
+    function draw() {
+      // 圆环平滑插值跟随（0.16 = 延迟感，越小越“飘”）
+      ringX += (mouseX - ringX) * 0.16;
+      ringY += (mouseY - ringY) * 0.16;
+      ring.style.transform = "translate3d(" + ringX + "px, " + ringY + "px, 0)";
+      dot.style.transform = "translate3d(" + mouseX + "px, " + mouseY + "px, 0)";
+
+      // 拖尾粒子
+      ctx.clearRect(0, 0, w, h);
+      for (var i = trail.length - 1; i >= 0; i--) {
+        var p = trail[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        p.life -= p.decay;
+        if (p.life <= 0) { trail.splice(i, 1); continue; }
+        ctx.globalAlpha = p.life * 0.45;
+        ctx.fillStyle = "#ffb066";
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size * p.life, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+      rafId = requestAnimationFrame(draw);
+    }
+
+    document.addEventListener("mousemove", function (e) {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+      spawnTrail(mouseX, mouseY);
+      if (!rafId) draw();
+
+      // 用 elementFromPoint 判断鼠标下是否是可交互元素（比 mouseover 更可靠）
+      var el = document.elementFromPoint(mouseX, mouseY);
+      var interactive = el && el.closest &&
+        el.closest("a, button, .course-card, .skill-card, .photo-container, .id-card");
+      ring.classList.toggle("is-active", !!interactive);
+    }, { passive: true });
+
+    // 鼠标离开窗口时隐藏光标
+    document.documentElement.addEventListener("mouseleave", function () {
+      dot.style.opacity = "0";
+      ring.style.opacity = "0";
+    });
+    document.documentElement.addEventListener("mouseenter", function () {
+      dot.style.opacity = "1";
+      ring.style.opacity = "1";
+    });
+  }
+
   document.addEventListener("DOMContentLoaded", function () {
     initLang();
     initHeader();
@@ -576,6 +754,8 @@
     initReveal();
     initScrollSpy();
     initBgParticles();
+    initIdCard();
     initPhotoXray();
+    initCustomCursor();
   });
 })();
