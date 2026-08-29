@@ -189,6 +189,59 @@
       <p class="kicker"><span class="kicker-num">03</span> / <span data-i18n="navProjects">项目</span></p>
       <h2 class="section-title" data-i18n="projTitle">Featured · 项目</h2>
 
+      <!-- FloodSight：三维 GIS 开发作品
+           · 上线后把"在线体验"按钮的 href 换成实际部署地址
+           · 文案键在 js/main.js 词典 projFlood* / statFlood* / chipFlood*（中英各一处） -->
+      <article class="project-featured reveal">
+        <div class="project-text">
+          <p class="project-tag" data-i18n="projFloodTag">三维 GIS 开发 · 作品集项目</p>
+          <h3 class="project-title" data-i18n="projFloodTitle">FloodSight · 长江（南京段）洪水淹没三维模拟与分析系统</h3>
+          <p class="project-desc" data-i18n="projFloodDesc">
+            基于 Cesium 地理底座与 Three.js 渲染引擎的深度融合，在浏览器中加载南京沿江真实地形与影像，
+            以自定义 GLSL 水面着色器模拟洪水淹没全过程：岸线随地形实时进退、水深渐变着色、洪峰上涨动画。
+            对 4 万余栋 OSM 建筑与主干路网做淹没分析，提供危险性分级、受淹要素实时统计、
+            单点水深查询与跨江剖面分析等专业 GIS 功能。
+          </p>
+          <div class="project-stats">
+            <div class="stat">
+              <span class="stat-num">40,625</span>
+              <span class="stat-label" data-i18n="statFloodB">栋 OSM 建筑白模</span>
+            </div>
+            <div class="stat">
+              <span class="stat-num">118万</span>
+              <span class="stat-label" data-i18n="statFloodT">渲染三角形</span>
+            </div>
+            <div class="stat">
+              <span class="stat-num">279.8</span>
+              <span class="stat-label" data-i18n="statFloodA">km² 峰值淹没面积</span>
+            </div>
+            <div class="stat">
+              <span class="stat-num">2</span>
+              <span class="stat-label" data-i18n="statFloodE">大三维引擎深度整合</span>
+            </div>
+          </div>
+          <div class="chips">
+            <span class="chip">Cesium</span>
+            <span class="chip">Three.js</span>
+            <span class="chip">GLSL Shader</span>
+            <span class="chip">Vue 3 + TypeScript</span>
+            <span class="chip" data-i18n="chipFloodEcharts">ECharts 可视化</span>
+          </div>
+          <a class="btn btn-primary" href="https://floodsight-kappa.vercel.app" target="_blank" rel="noopener" data-i18n="projFloodCta">在线体验 →</a>
+        </div>
+        <div class="project-visual" aria-hidden="true">
+          <div class="map-grid"></div>
+          <div class="radar">
+            <span class="radar-ring r1"></span>
+            <span class="radar-ring r2"></span>
+            <span class="radar-ring r3"></span>
+            <span class="radar-sweep"></span>
+            <span class="radar-dot"></span>
+          </div>
+          <span class="visual-label">NANJING · YANGTZE 32°N 118°E</span>
+        </div>
+      </article>
+
       <!-- 毕业论文：重点项目
            · 描述和成果数据都来自你的答辩 PPT（OA 86.43% / Kappa 0.858 / 20 季度 / 冬季 91.45%）
            · 想改数字或文案：改这里的文字 + js/main.js 词典里 projFeaturedDesc/stat* 键（中英各一处）
