@@ -66,6 +66,16 @@
 
       // 项目
       projTitle: "Featured · 项目",
+      projFloodTag: "三维 GIS 开发 · 作品集项目",
+      projFloodTitle: "FloodSight · 长江（南京段）洪水淹没三维模拟与分析系统",
+      projFloodDesc:
+        "基于 Cesium 地理底座与 Three.js 渲染引擎的深度融合，在浏览器中加载南京沿江真实地形与影像，以自定义 GLSL 水面着色器模拟洪水淹没全过程：岸线随地形实时进退、水深渐变着色、洪峰上涨动画。对 4 万余栋 OSM 建筑与主干路网做淹没分析，提供危险性分级、受淹要素实时统计、单点水深查询与跨江剖面分析等专业 GIS 功能。",
+      statFloodB: "栋 OSM 建筑白模",
+      statFloodT: "渲染三角形",
+      statFloodA: "km² 峰值淹没面积",
+      statFloodE: "大三维引擎深度整合",
+      chipFloodEcharts: "ECharts 可视化",
+      projFloodCta: "在线体验 →",
       projFeaturedTag: "毕业论文 · 重点项目",
       projFeaturedTitle: "基于 Google Earth Engine 的南极普里兹湾海冰密集度监测研究",
       projFeaturedDesc:
@@ -179,6 +189,16 @@
 
       // Projects
       projTitle: "Featured · Projects",
+      projFloodTag: "3D GIS Development · Portfolio",
+      projFloodTitle: "FloodSight · Flood Inundation 3D Simulation & Analysis for the Nanjing Section of the Yangtze River",
+      projFloodDesc:
+        "Built on a deep integration of the Cesium geographic foundation and the Three.js rendering engine, FloodSight loads real terrain and imagery of the Nanjing riverfront in the browser and simulates the full flood-inundation process with a custom GLSL water shader: shorelines advancing with terrain, depth-gradient coloring, and a flood-peak rising animation. It analyzes 40,000+ OSM buildings and the arterial road network, offering hazard grading, real-time inundated-asset statistics, single-point depth query, and cross-river profile analysis.",
+      statFloodB: "OSM Building Models",
+      statFloodT: "Rendered Triangles",
+      statFloodA: "km² Peak Inundation Area",
+      statFloodE: "3D Engines Integrated",
+      chipFloodEcharts: "ECharts Analytics",
+      projFloodCta: "Live Demo →",
       projFeaturedTag: "Thesis · Featured Project",
       projFeaturedTitle: "Sea Ice Concentration Monitoring in Antarctica's Prydz Bay Based on Google Earth Engine",
       projFeaturedDesc:
